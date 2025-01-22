@@ -8,6 +8,7 @@
  * i18n, 2005, Arnaldo Carvalho de Melo <acme@conectiva.com.br>
  */
 
+#include <locale.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -26,7 +27,7 @@
 #include "mnconf-common.h"
 
 static const char mconf_readme[] =
-"Overview\n"
+"概览\n"
 "--------\n"
 "This interface lets you select features and parameters for the build.\n"
 "Features can either be built-in, modularized, or ignored. Parameters\n"
@@ -182,104 +183,94 @@ static const char mconf_readme[] =
 " bluetitle  => an LCD friendly version of classic. (default)\n"
 "\n",
 menu_instructions[] =
-	"Arrow keys navigate the menu.  "
-	"<Enter> selects submenus ---> (or empty submenus ----).  "
-	"Highlighted letters are hotkeys.  "
-	"Pressing <Y> includes, <N> excludes, <M> modularizes features.  "
-	"Press <Esc><Esc> to exit, <?> for Help, </> for Search.  "
-	"Legend: [*] built-in  [ ] excluded  <M> module  < > module capable",
+	"使用箭头键导航菜单。"
+	"<Enter> 选择子菜单 ---> (或空子菜单 ----)。"
+	"高亮显示的字母是快捷键。"
+	"按 <Y> 包含, <N> 排除, <M> 模块化功能。"
+	"按 <Esc> 退出, <?> 获取帮助, </> 搜索。"
+	"图例: [*] 内置 [ ] 排除 <M> 模块 < > 模块功能",
+
 radiolist_instructions[] =
-	"Use the arrow keys to navigate this window or "
-	"press the hotkey of the item you wish to select "
-	"followed by the <SPACE BAR>. "
-	"Press <?> for additional information about this option.",
+	"使用箭头键导航此窗口，或按下您希望选择的项目的快捷键并按 <空格键>。"
+	"按 <?> 获取有关此选项的更多信息。",
+
 inputbox_instructions_int[] =
-	"Please enter a decimal value. "
-	"Fractions will not be accepted.  "
-	"Use the <TAB> key to move from the input field to the buttons below it.",
+	"请输入一个十进制值。"
+	"不接受分数。"
+	"使用 <TAB> 键从输入字段移动到其下的按钮。",
+
 inputbox_instructions_hex[] =
-	"Please enter a hexadecimal value. "
-	"Use the <TAB> key to move from the input field to the buttons below it.",
+	"请输入一个十六进制值。"
+	"使用 <TAB> 键从输入字段移动到其下的按钮。",
+
 inputbox_instructions_string[] =
-	"Please enter a string value. "
-	"Use the <TAB> key to move from the input field to the buttons below it.",
+	"请输入一个字符串值。"
+	"使用 <TAB> 键从输入字段移动到其下的按钮。",
+
 setmod_text[] =
-	"This feature depends on another which has been configured as a module.\n"
-	"As a result, this feature will be built as a module.",
+	"此功能依赖于另一个已配置为模块的功能。\n"
+	"因此，此功能将被构建为模块。",
+
 load_config_text[] =
-	"Enter the name of the configuration file you wish to load.  "
-	"Accept the name shown to restore the configuration you "
-	"last retrieved.  Leave blank to abort.",
+	"输入您希望加载的配置文件的名称。"
+	"接受显示的名称以恢复您上次检索的配置。"
+	"留空以中止。",
+
 load_config_help[] =
 	"\n"
-	"For various reasons, one may wish to keep several different\n"
-	"configurations available on a single machine.\n"
+	"由于各种原因，您可能希望在一台机器上保留多个不同的配置。\n"
 	"\n"
-	"If you have saved a previous configuration in a file other than the\n"
-	"default one, entering its name here will allow you to modify that\n"
-	"configuration.\n"
+	"如果您之前将配置保存在默认配置文件之外的文件中，输入其名称可以修改该配置。\n"
 	"\n"
-	"If you are uncertain, then you have probably never used alternate\n"
-	"configuration files. You should therefore leave this blank to abort.\n",
+	"如果不确定，那么您可能从未使用过替代配置文件。因此，您应留空以中止。\n",
+
 save_config_text[] =
-	"Enter a filename to which this configuration should be saved "
-	"as an alternate.  Leave blank to abort.",
+	"输入要将该配置保存为替代配置的文件名。"
+	"留空以中止。",
+
 save_config_help[] =
 	"\n"
-	"For various reasons, one may wish to keep different configurations\n"
-	"available on a single machine.\n"
+	"由于各种原因，您可能希望在一台机器上保留不同的配置。\n"
 	"\n"
-	"Entering a file name here will allow you to later retrieve, modify\n"
-	"and use the current configuration as an alternate to whatever\n"
-	"configuration options you have selected at that time.\n"
+	"在此输入文件名可让您稍后检索、修改并使用当前配置作为您当时选择的配置选项的替代。\n"
 	"\n"
-	"If you are uncertain what all this means then you should probably\n"
-	"leave this blank.\n",
+	"如果您不确定这意味着什么，那么您可能应该留空。\n",
+
 search_help[] =
 	"\n"
-	"Search for symbols and display their relations.\n"
-	"Regular expressions are allowed.\n"
-	"Example: search for \"^FOO\"\n"
-	"Result:\n"
+	"搜索符号并显示其关系。\n"
+	"允许使用正则表达式。\n"
+	"示例: 搜索 \"^FOO\"\n"
+	"结果:\n"
 	"-----------------------------------------------------------------\n"
-	"Symbol: FOO [=m]\n"
-	"Type  : tristate\n"
-	"Prompt: Foo bus is used to drive the bar HW\n"
-	"  Location:\n"
-	"    -> Bus options (PCI, PCMCIA, EISA, ISA)\n"
-	"      -> PCI support (PCI [=y])\n"
-	"(1)     -> PCI access mode (<choice> [=y])\n"
-	"  Defined at drivers/pci/Kconfig:47\n"
-	"  Depends on: X86_LOCAL_APIC && X86_IO_APIC\n"
-	"  Selects: LIBCRC32\n"
-	"  Selected by: BAR [=n]\n"
+	"符号: FOO [=m]\n"
+	"类型: 三态\n"
+	"提示: Foo 总线用于驱动 bar 硬件\n"
+	"  位置:\n"
+	"    -> 总线选项 (PCI, PCMCIA, EISA, ISA)\n"
+	"      -> PCI 支持 (PCI [=y])\n"
+	"(1)     -> PCI 访问模式 (<choice> [=y])\n"
+	"  定义于 drivers/pci/Kconfig:47\n"
+	"  依赖于: X86_LOCAL_APIC && X86_IO_APIC\n"
+	"  选择: LIBCRC32\n"
+	"  被选择: BAR [=n]\n"
 	"-----------------------------------------------------------------\n"
-	"o The line 'Type:' shows the type of the configuration option for\n"
-	"  this symbol (bool, tristate, string, ...)\n"
-	"o The line 'Prompt:' shows the text used in the menu structure for\n"
-	"  this symbol\n"
-	"o The 'Defined at' line tells at what file / line number the symbol\n"
-	"  is defined\n"
-	"o The 'Depends on:' line tells what symbols need to be defined for\n"
-	"  this symbol to be visible in the menu (selectable)\n"
-	"o The 'Location:' lines tells where in the menu structure this symbol\n"
-	"  is located\n"
-	"    A location followed by a [=y] indicates that this is a\n"
-	"    selectable menu item - and the current value is displayed inside\n"
-	"    brackets.\n"
-	"    Press the key in the (#) prefix to jump directly to that\n"
-	"    location. You will be returned to the current search results\n"
-	"    after exiting this new menu.\n"
-	"o The 'Selects:' line tells what symbols will be automatically\n"
-	"  selected if this symbol is selected (y or m)\n"
-	"o The 'Selected by' line tells what symbol has selected this symbol\n"
+	"o '类型:' 行显示此符号的配置选项类型 (布尔, 三态, 字符串, ...)\n"
+	"o '提示:' 行显示菜单结构中用于此符号的文本\n"
+	"o '定义于' 行显示符号定义的位置 (文件 / 行号)\n"
+	"o '依赖于:' 行显示要使此符号在菜单中可见 (可选择) 需要定义的符号\n"
+	"o '位置:' 行显示此符号在菜单结构中的位置\n"
+	"    位置后跟 [=y] 表示这是一个可选择的菜单项 - 当前值显示在括号内。\n"
+	"    按 (#) 前缀的键直接跳转到该位置。退出此新菜单后，您将返回到当前的搜索结果。\n"
+	"o '选择:' 行显示如果选择此符号 (y 或 m) 将自动选择的符号\n"
+	"o '被选择' 行显示选择此符号的符号\n"
 	"\n"
-	"Only relevant lines are shown.\n"
+	"仅显示相关行。\n"
 	"\n\n"
-	"Search examples:\n"
-	"Examples: USB	=> find all symbols containing USB\n"
-	"          ^USB => find all symbols starting with USB\n"
-	"          USB$ => find all symbols ending with USB\n"
+	"搜索示例:\n"
+	"示例: USB => 查找所有包含 USB 的符号\n"
+	"      ^USB => 查找所有以 USB 开头的符号\n"
+	"      USB$ => 查找所有以 USB 结尾的符号\n"
 	"\n";
 
 static int indent;
@@ -404,7 +395,7 @@ again:
 	case 0:
 		break;
 	case 1:
-		show_helptext("Search Configuration", search_help);
+		show_helptext("搜索配置", search_help);
 		goto again;
 	default:
 		str_free(&title);
@@ -417,7 +408,7 @@ again:
 		dialog_input += strlen(CONFIG_);
 
 	sttext = str_new();
-	str_printf(&sttext, "Search (%s)", dialog_input_result);
+	str_printf(&sttext, "搜索 (%s)", dialog_input_result);
 	stpart.text = str_get(&sttext);
 	list_add_tail(&stpart.entries, &trail);
 
@@ -432,7 +423,7 @@ again:
 		jump_key_char = 0;
 		res = get_relations_str(sym_arr, &head);
 		set_subtitle();
-		dres = show_textbox_ext("Search Results", str_get(&res), 0, 0,
+		dres = show_textbox_ext("搜索结果", str_get(&res), 0, 0,
 					&vscroll, &hscroll,
 					handle_search_keys, &data);
 		again = false;
@@ -880,8 +871,8 @@ static int handle_exit(void)
 	dialog_clear();
 	if (conf_get_changed())
 		res = dialog_yesno(NULL,
-				   "Do you wish to save your new configuration?\n"
-				     "(Press <ESC><ESC> to continue kernel configuration.)",
+				   "您想保存新配置文件吗？?\n"
+				     "(按 <ESC> 继续配置内核。)",
 				   6, 60);
 	else
 		res = -1;
@@ -892,8 +883,8 @@ static int handle_exit(void)
 	case 0:
 		if (conf_write(filename)) {
 			fprintf(stderr, "\n\n"
-					  "Error while writing of the configuration.\n"
-					  "Your configuration changes were NOT saved."
+					  "写入配置时出错。\n"
+					  "您的配置更改将被丢弃。"
 					  "\n\n");
 			return 1;
 		}
@@ -902,15 +893,15 @@ static int handle_exit(void)
 	case -1:
 		if (!silent)
 			printf("\n\n"
-				 "*** End of the configuration.\n"
-				 "*** Execute 'make' to start the build or try 'make help'."
+				 "*** 配置完成。\n"
+				 "*** 输入 'make' 开始编译或 'make help'."
 				 "\n\n");
 		res = 0;
 		break;
 	default:
 		if (!silent)
 			fprintf(stderr, "\n\n"
-					  "Your configuration changes were NOT saved."
+					  "您的配置更改将被丢弃。"
 					  "\n\n");
 		if (res != KEY_ESC)
 			res = 0;
@@ -928,6 +919,10 @@ int main(int ac, char **av)
 {
 	char *mode;
 	int res;
+
+	setlocale(LC_ALL, "C.UTF-8"); // 设置字符集为UTF-8
+        wchar_t* s = L"你好，世界！"; // 使用宽字符类型
+        wprintf(L"输出: %ls\n", s); // 使用wprintf输出宽字符字符串
 
 	signal(SIGINT, sig_handler);
 
@@ -947,8 +942,8 @@ int main(int ac, char **av)
 	}
 
 	if (init_dialog(NULL)) {
-		fprintf(stderr, "Your display is too small to run Menuconfig!\n");
-		fprintf(stderr, "It must be at least 19 lines by 80 columns.\n");
+		fprintf(stderr, "您的屏幕过小，无法 Menuconfig!\n");
+		fprintf(stderr, "至少需要 19 行 80 列显示。\n");
 		return 1;
 	}
 
