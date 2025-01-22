@@ -8,6 +8,7 @@
  * i18n, 2005, Arnaldo Carvalho de Melo <acme@conectiva.com.br>
  */
 
+#include <locale.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -26,7 +27,7 @@
 #include "mnconf-common.h"
 
 static const char mconf_readme[] =
-"Overview\n"
+"概览\n"
 "--------\n"
 "This interface lets you select features and parameters for the build.\n"
 "Features can either be built-in, modularized, or ignored. Parameters\n"
@@ -929,6 +930,10 @@ int main(int ac, char **av)
 	char *mode;
 	int res;
 
+	setlocale(LC_ALL, "C.UTF-8"); // 设置字符集为UTF-8
+        wchar_t* s = L"你好，世界！"; // 使用宽字符类型
+        wprintf(L"输出: %ls\n", s); // 使用wprintf输出宽字符字符串
+
 	signal(SIGINT, sig_handler);
 
 	if (ac > 1 && strcmp(av[1], "-s") == 0) {
@@ -947,8 +952,8 @@ int main(int ac, char **av)
 	}
 
 	if (init_dialog(NULL)) {
-		fprintf(stderr, "Your display is too small to run Menuconfig!\n");
-		fprintf(stderr, "It must be at least 19 lines by 80 columns.\n");
+		fprintf(stderr, "您的屏幕过小以运行 Menuconfig!\n");
+		fprintf(stderr, "至少需要 19 行 80 列。\n");
 		return 1;
 	}
 
